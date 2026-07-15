@@ -14,8 +14,8 @@
     },
     {
       "parameters": {
-        "content": "## OSuite governed action demo\n\nThis workflow shows a realistic enterprise pattern:\n\n1. A workflow prepares a customer-data export.\n2. OSuite reviews the planned action before it runs.\n3. If approval is required, approve it in OSuite Studio.\n4. n8n checks the approval state.\n5. The workflow records the final outcome back to OSuite.\n\nNo real customer data is used.",
-        "height": 300,
+        "content": "## OSuite governed action demo\n\nThis workflow shows a realistic enterprise pattern:\n\n1. A workflow prepares a customer-data export.\n2. OSuite reviews the planned action before it runs.\n3. If approval is required, approve it in OSuite Studio.\n4. n8n checks the approval state.\n5. The workflow records the final outcome back to OSuite.\n\nIf OSuite nodes show a red warning, create an **OSuite API** credential and assign it to each OSuite node. The demo file intentionally does not include credentials.\n\nNo real customer data is used.",
+        "height": 360,
         "width": 360,
         "color": 7
       },

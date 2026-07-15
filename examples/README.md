@@ -33,6 +33,8 @@ Before running the workflow, create an **OSuite API** credential in n8n:
 - Base URL: `https://studio.osuite.ai`
 - API Key: a workspace API key from OSuite Studio
 
+The imported OSuite nodes will show a red warning until this credential is assigned. This is expected: workflow JSON files should not embed API keys.
+
 Recommended recording flow:
 
 1. Import the workflow.
