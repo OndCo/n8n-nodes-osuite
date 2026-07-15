@@ -1,0 +1,524 @@
+{
+  "name": "OSuite governed customer-data export demo",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## OSuite governed action demo\n\nThis workflow shows a realistic enterprise pattern:\n\n1. A workflow prepares a customer-data export.\n2. OSuite reviews the planned action before it runs.\n3. If approval is required, approve it in OSuite Studio.\n4. n8n checks the approval state.\n5. The workflow records the final outcome back to OSuite.\n\nNo real customer data is used.",
+        "height": 300,
+        "width": 360,
+        "color": 7
+      },
+      "id": "demo-note",
+      "name": "Demo story",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "request-id",
+              "name": "request_id",
+              "value": "demo-crm-export-001",
+              "type": "string"
+            },
+            {
+              "id": "requested-by",
+              "name": "requested_by",
+              "value": "revenue-ops-demo",
+              "type": "string"
+            },
+            {
+              "id": "business-goal",
+              "name": "business_goal",
+              "value": "Prepare a weekly customer-risk summary for the account team",
+              "type": "string"
+            },
+            {
+              "id": "records-requested",
+              "name": "records_requested",
+              "value": 25,
+              "type": "number"
+            },
+            {
+              "id": "systems",
+              "name": "systems",
+              "value": "CRM, Slack, customer data",
+              "type": "string"
+            },
+            {
+              "id": "contains-customer-data",
+              "name": "contains_customer_data",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "destination",
+              "name": "destination",
+              "value": "internal Slack channel",
+              "type": "string"
+            },
+            {
+              "id": "sample-fields",
+              "name": "sample_fields",
+              "value": "company, account_status, renewal_risk, support_notes",
+              "type": "string"
+            },
+            {
+              "id": "demo-note-field",
+              "name": "note",
+              "value": "Demo data only. No real customer records are used.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "mock-crm-export-request",
+      "name": "Mock CRM Export Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "summarizeRuntimeExposure"
+      },
+      "id": "osuite-runtime-exposure",
+      "name": "OSuite - Runtime Exposure Snapshot",
+      "type": "n8n-nodes-osuite.osuite",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Optional posture snapshot\n\nThis branch calls **Summarize Runtime Exposure** so a reviewer can see the workspace runtime-security posture while the demo runs.\n\nIt is read-only and does not affect the action approval path.",
+        "height": 220,
+        "width": 360,
+        "color": 4
+      },
+      "id": "runtime-note",
+      "name": "Runtime exposure note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "reviewPlannedWork",
+        "goal": "Prepare a weekly customer-risk summary for the account team.",
+        "proposedAction": "Export 25 customer account records from CRM and send a summarized renewal-risk report to an internal Slack channel.",
+        "actionKind": "data_access",
+        "riskLevel": 45,
+        "systemsTouched": "CRM, Slack, customer data",
+        "reversible": false,
+        "decisionContext": "This workflow touches customer-related account data and sends a downstream business notification. OSuite should review the action before execution, bind any approval to this specific action, and keep a replayable proof trail.",
+        "toolInputJson": "{\n  \"request_id\": \"demo-crm-export-001\",\n  \"requested_by\": \"revenue-ops-demo\",\n  \"business_goal\": \"Prepare a weekly customer-risk summary for the account team\",\n  \"records_requested\": 25,\n  \"systems\": [\"CRM\", \"Slack\", \"customer data\"],\n  \"contains_customer_data\": true,\n  \"destination\": \"internal Slack channel\",\n  \"sample_fields\": [\"company\", \"account_status\", \"renewal_risk\", \"support_notes\"],\n  \"note\": \"Demo data only. No real customer records are used.\"\n}",
+        "advanced": {
+          "agentId": "n8n-customer-export-demo",
+          "agentName": "n8n customer export workflow",
+          "nodeId": "osuite-review-planned-work",
+          "workflowId": "osuite-governed-customer-export-demo"
+        }
+      },
+      "id": "osuite-review-planned-work",
+      "name": "OSuite - Review Planned Work",
+      "type": "n8n-nodes-osuite.osuite",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Approval checkpoint\n\nRun the workflow until **OSuite - Review Planned Work** returns an `action_id`.\n\nIf OSuite requires approval, open the replay or review queue in OSuite Studio, approve the action, then continue from **OSuite - Check If Approved**.",
+        "height": 240,
+        "width": 360,
+        "color": 5
+      },
+      "id": "approval-note",
+      "name": "Approval checkpoint note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "blocked-condition",
+              "leftValue": "={{ $json.blocked }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "blocked-gate",
+      "name": "Blocked by OSuite?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -120,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "blocked-status",
+              "name": "status",
+              "value": "blocked_by_osuite",
+              "type": "string"
+            },
+            {
+              "id": "blocked-action-id",
+              "name": "action_id",
+              "value": "={{ $('OSuite - Review Planned Work').item.json.action_id }}",
+              "type": "string"
+            },
+            {
+              "id": "blocked-reason",
+              "name": "reason",
+              "value": "OSuite blocked this planned customer-data action before execution.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "stop-blocked",
+      "name": "Stop - Blocked by OSuite",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "checkIfApproved",
+        "actionId": "={{ $('OSuite - Review Planned Work').item.json.action_id }}"
+      },
+      "id": "osuite-check-if-approved",
+      "name": "OSuite - Check If Approved",
+      "type": "n8n-nodes-osuite.osuite",
+      "typeVersion": 1,
+      "position": [
+        160,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "approved-condition",
+              "leftValue": "={{ $json.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "approved-gate",
+      "name": "Approved by OSuite?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        460,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "waiting-status",
+              "name": "status",
+              "value": "waiting_for_osuite_approval",
+              "type": "string"
+            },
+            {
+              "id": "waiting-action-id",
+              "name": "action_id",
+              "value": "={{ $('OSuite - Review Planned Work').item.json.action_id }}",
+              "type": "string"
+            },
+            {
+              "id": "waiting-replay-url",
+              "name": "replay_url",
+              "value": "={{ $('OSuite - Review Planned Work').item.json.replay_url }}",
+              "type": "string"
+            },
+            {
+              "id": "waiting-message",
+              "name": "message",
+              "value": "Approve this action in OSuite Studio, then run Check If Approved again.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "stop-waiting",
+      "name": "Stop - Waiting for Approval",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        760,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "action-performed",
+              "name": "action_performed",
+              "value": "Prepared internal account-risk summary",
+              "type": "string"
+            },
+            {
+              "id": "destination",
+              "name": "destination",
+              "value": "demo-slack-channel",
+              "type": "string"
+            },
+            {
+              "id": "records-processed",
+              "name": "records_processed",
+              "value": 25,
+              "type": "number"
+            },
+            {
+              "id": "status",
+              "name": "status",
+              "value": "completed",
+              "type": "string"
+            },
+            {
+              "id": "external-side-effects",
+              "name": "external_side_effects",
+              "value": "none in demo",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "mock-business-action",
+      "name": "Mock Business Action",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        760,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "recordFinalOutcome",
+        "actionId": "={{ $('OSuite - Review Planned Work').item.json.action_id }}",
+        "outcome": "completed",
+        "summary": "The workflow prepared a demo customer-risk summary after OSuite approval was verified. No real customer data was exported and no external message was sent during the demo.",
+        "sideEffects": "demo summary prepared",
+        "artifactsCreated": "n8n execution record, OSuite replay record"
+      },
+      "id": "osuite-record-final-outcome",
+      "name": "OSuite - Record Final Outcome",
+      "type": "n8n-nodes-osuite.osuite",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## What to show in the recording\n\n- The OSuite credential uses `https://studio.osuite.ai` plus a workspace API key.\n- Review Planned Work creates a pre-execution action record.\n- The action does not proceed while approval is pending.\n- After approval, the business step runs and Record Final Outcome closes the evidence loop.\n- The OSuite replay URL proves what was requested, approved, executed, and recorded.",
+        "height": 300,
+        "width": 380,
+        "color": 6
+      },
+      "id": "recording-note",
+      "name": "Recording script",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -300
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Mock CRM Export Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "OSuite - Runtime Exposure Snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock CRM Export Request": {
+      "main": [
+        [
+          {
+            "node": "OSuite - Review Planned Work",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OSuite - Review Planned Work": {
+      "main": [
+        [
+          {
+            "node": "Blocked by OSuite?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked by OSuite?": {
+      "main": [
+        [
+          {
+            "node": "Stop - Blocked by OSuite",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OSuite - Check If Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OSuite - Check If Approved": {
+      "main": [
+        [
+          {
+            "node": "Approved by OSuite?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved by OSuite?": {
+      "main": [
+        [
+          {
+            "node": "Mock Business Action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop - Waiting for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Business Action": {
+      "main": [
+        [
+          {
+            "node": "OSuite - Record Final Outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "osuite-demo"
+    },
+    {
+      "name": "governed-actions"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-07-15T00:00:00.000Z",
+  "versionId": "osuite-governed-customer-export-demo-v1"
+}

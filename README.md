@@ -103,6 +103,14 @@ Trigger
 → OSuite: Record Final Outcome
 ```
 
+An importable demo workflow is included at:
+
+```text
+examples/osuite-governed-customer-export.workflow.json
+```
+
+It demonstrates a customer-data export review, an approval checkpoint, a mock business action, and final outcome recording.
+
 ## Data handling
 
 This node sends the action context you configure in n8n to your OSuite workspace endpoint. That may include declared goal, proposed action, systems touched, risk level, decision context, optional tool input summary, final outcome, side effects, and artifact summaries.
