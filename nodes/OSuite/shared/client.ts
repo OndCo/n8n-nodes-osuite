@@ -195,6 +195,7 @@ export function buildHttpRequestOptions(
 		url: `${baseUrl}${path}`,
 		body,
 		json: true,
+		timeout: 60000,
 		headers: {
 			Accept: 'application/json',
 			'Content-Type': 'application/json',

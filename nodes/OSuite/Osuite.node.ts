@@ -57,11 +57,47 @@ async function requestOSuite(
 	path: string,
 	body?: IDataObject,
 ): Promise<ActionResponse> {
-	const response = (await executeFunctions.helpers.httpRequest(
-		buildHttpRequestOptions(credentials, method, path, body),
-	)) as ActionResponse;
+	const requestOptions = buildHttpRequestOptions(credentials, method, path, body);
+	const timeout = Number(requestOptions.timeout ?? 60000);
 
-	return response;
+	try {
+		const response = await fetch(requestOptions.url, {
+			method,
+			headers: requestOptions.headers as Record<string, string>,
+			body: method === 'GET' || body === undefined ? undefined : JSON.stringify(body),
+			signal: AbortSignal.timeout(timeout),
+		});
+		const text = await response.text();
+		let parsed: unknown = {};
+
+		if (text) {
+			try {
+				parsed = JSON.parse(text) as unknown;
+			} catch {
+				throw new NodeOperationError(
+					executeFunctions.getNode(),
+					`OSuite returned a non-JSON response (${response.status}).`,
+				);
+			}
+		}
+
+		const data =
+			typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+				? (parsed as ActionResponse)
+				: ({ value: parsed } as ActionResponse);
+		data._httpStatus = response.status;
+		data._http_status = response.status;
+
+		return data;
+	} catch (error) {
+		const message =
+			error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name)
+				? `OSuite request timed out after ${timeout}ms.`
+				: error instanceof Error
+					? error.message
+					: String(error);
+		throw new NodeOperationError(executeFunctions.getNode(), message);
+	}
 }
 
 function getCredentialsObject(credentials: IDataObject): OSuiteCredentials {

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+	buildHttpRequestOptions,
 	buildReviewPayload,
 	compactJson,
 	normalizeBaseUrl,
@@ -17,6 +18,22 @@ test('normalizeBaseUrl trims trailing slashes and defaults to OSuite Cloud', () 
 test('parseCsv returns clean values and fallback when empty', () => {
 	assert.deepEqual(parseCsv('crm, slack, , github'), ['crm', 'slack', 'github']);
 	assert.deepEqual(parseCsv('', ['n8n']), ['n8n']);
+});
+
+test('buildHttpRequestOptions gives OSuite decisions enough time to complete', () => {
+	const options = buildHttpRequestOptions(
+		{
+			baseUrl: 'https://studio.osuite.ai/',
+			apiKey: 'test_key',
+		},
+		'POST',
+		'/api/actions',
+		{ action_id: 'act_timeout_test' },
+	);
+
+	assert.equal(options.url, 'https://studio.osuite.ai/api/actions');
+	assert.equal(options.timeout, 60000);
+	assert.equal(options.headers['x-api-key'], 'test_key');
 });
 
 test('compactJson truncates oversized payloads with provenance metadata', () => {

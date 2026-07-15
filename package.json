@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-osuite",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "OSuite governed action checkpoints for n8n workflows and AI agents.",
 	"license": "MIT",
 	"homepage": "https://ond.cc",
