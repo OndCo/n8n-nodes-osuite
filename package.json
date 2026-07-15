@@ -18,7 +18,11 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/OndCo/n8n-nodes-osuite.git"
+		"url": "git+https://github.com/OndCo/n8n-nodes-osuite.git"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	},
 	"scripts": {
 		"build": "n8n-node build",
