@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-osuite.osuite",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Developer Tools", "Security"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://ond.cc/reference-architecture"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/OndCo/n8n-nodes-osuite#readme"
+			}
+		]
+	}
+}

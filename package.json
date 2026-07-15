@@ -1,0 +1,56 @@
+{
+	"name": "n8n-nodes-osuite",
+	"version": "0.1.0",
+	"description": "OSuite governed action checkpoints for n8n workflows and AI agents.",
+	"license": "MIT",
+	"homepage": "https://ond.cc",
+	"keywords": [
+		"n8n-community-node-package",
+		"osuite",
+		"ai-governance",
+		"agent-governance",
+		"runtime-security",
+		"approval-workflow"
+	],
+	"author": {
+		"name": "Ond Holdings Inc.",
+		"email": "jw@nd.im"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/OndCo/n8n-nodes-osuite.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "npm run build && node --test test/*.test.mjs",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/OSuiteApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/OSuite/Osuite.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.39.2",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
